@@ -1,0 +1,2 @@
+# The dashboard and simulator use only the Python standard library.
+pytest>=8,<9
