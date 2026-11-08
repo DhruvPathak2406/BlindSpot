@@ -1,0 +1,9 @@
+[project]
+name = "blindspot"
+version = "0.1.0"
+description = "BlindSpot: adaptive network reconnaissance under partial observability"
+requires-python = ">=3.10"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
