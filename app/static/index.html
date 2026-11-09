@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101923">
+  <title>BlindSpot — Network Simulator</title>
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/dashboard.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="BlindSpot home">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <span>BlindSpot</span>
+    </a>
+    <span class="mode-badge"><span aria-hidden="true"></span> SIMULATION ONLY</span>
+  </header>
+
+  <main class="layout">
+    <section class="intro">
+      <p class="eyebrow">NETWORK DISCOVERY LAB</p>
+      <h1>Explore a network with limited visibility.</h1>
+      <p class="subtitle">Generate a synthetic network, run reconnaissance actions, and inspect only the evidence the simulated scanner can observe.</p>
+    </section>
+
+    <section class="panel setup-panel" aria-labelledby="setup-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">01 / SETUP</p>
+          <h2 id="setup-title">Generate a network</h2>
+        </div>
+      </div>
+      <form id="generate-form" class="form-grid">
+        <label>Seed
+          <input id="seed" name="seed" type="number" min="0" step="1" value="42" required>
+        </label>
+        <label>Hosts
+          <input id="hosts" name="hosts" type="number" min="10" max="50" step="1" value="25" required>
+        </label>
+        <label>Subnets
+          <input id="subnets" name="subnets" type="number" min="2" max="8" step="1" value="4" required>
+        </label>
+        <label>Action budget
+          <input id="budget" name="budget" type="number" min="1" step="1" value="100" required>
+        </label>
+        <label class="strategy-field">Strategy
+          <select id="strategy" name="strategy">
+            <option>Fixed order</option>
+            <option>Random</option>
+          </select>
+        </label>
+        <button class="button button-primary generate-button" type="submit">Generate network</button>
+      </form>
+      <p class="form-hint">Same seed and settings produce the same synthetic network and observation sequence.</p>
+    </section>
+
+    <section id="workspace" class="workspace" hidden>
+      <div class="workspace-heading">
+        <div>
+          <p class="eyebrow">02 / RECONNAISSANCE</p>
+          <h2>Discovery workspace</h2>
+          <p id="scope" class="scope-line"></p>
+        </div>
+        <span id="strategy-label" class="strategy-badge"></span>
+      </div>
+
+      <section class="metrics" aria-label="Session metrics">
+        <article class="metric-card">
+          <span class="metric-label">Budget remaining</span>
+          <strong id="budget-metric">—</strong>
+          <div class="progress-track"><div id="budget-progress" class="progress-value"></div></div>
+        </article>
+        <article class="metric-card"><span class="metric-label">Actions used</span><strong id="actions-metric">0</strong></article>
+        <article class="metric-card"><span class="metric-label">Hosts discovered</span><strong id="hosts-metric">0</strong></article>
+        <article class="metric-card"><span class="metric-label">Services identified</span><strong id="services-metric">0</strong></article>
+      </section>
+
+      <section class="panel actions-panel" aria-label="Reconnaissance controls">
+        <label class="steps-control">Steps per run
+          <input id="steps" type="number" min="1" max="1000" value="10">
+        </label>
+        <button id="run-steps" class="button button-secondary" type="button">Run steps</button>
+        <button id="run-all" class="button button-secondary" type="button">Run to completion</button>
+        <label class="subnet-control">Subnet
+          <select id="subnet"></select>
+        </label>
+        <button id="explore" class="button button-secondary" type="button">Explore subnet</button>
+      </section>
+
+      <section class="panel results-panel">
+        <div class="tabs" role="tablist" aria-label="Discovery results">
+          <button class="tab active" id="hosts-tab" type="button" role="tab" aria-selected="true" aria-controls="hosts-view">Hosts &amp; services</button>
+          <button class="tab" id="topology-tab" type="button" role="tab" aria-selected="false" aria-controls="topology-view">Topology</button>
+          <button class="tab" id="history-tab" type="button" role="tab" aria-selected="false" aria-controls="history-view">Action history</button>
+        </div>
+        <div id="hosts-view" class="tab-view" role="tabpanel" aria-labelledby="hosts-tab">
+          <div class="table-block">
+            <h3>Discovered hosts</h3>
+            <div class="table-scroll"><table><thead><tr><th>IP address</th><th>OS estimate</th><th>Observed open ports</th></tr></thead><tbody id="hosts-table"></tbody></table></div>
+          </div>
+          <div class="table-block">
+            <h3>Identified services</h3>
+            <div class="table-scroll"><table><thead><tr><th>IP address</th><th>Port</th><th>Service</th><th>Version</th><th>OS hint</th></tr></thead><tbody id="services-table"></tbody></table></div>
+          </div>
+        </div>
+        <div id="topology-view" class="tab-view" role="tabpanel" aria-labelledby="topology-tab" hidden>
+          <p class="form-hint">Confirmed links appear after subnet exploration. Only observed hosts and links are shown.</p>
+          <div id="topology" class="topology" role="img" aria-label="Discovered network topology"></div>
+        </div>
+        <div id="history-view" class="tab-view" role="tabpanel" aria-labelledby="history-tab" hidden>
+          <div class="table-scroll"><table><thead><tr><th>#</th><th>Time</th><th>Action</th><th>Target</th><th>Port</th><th>Observations</th><th>New hosts</th><th>New services</th><th>Budget left</th></tr></thead><tbody id="history-table"></tbody></table></div>
+        </div>
+      </section>
+    </section>
+
+    <div id="status" class="status" role="status" aria-live="polite">Ready. Generate a synthetic network to begin.</div>
+  </main>
+  <footer>BlindSpot is a simulator. It does not send probes to real networks.</footer>
+</body>
+</html>
